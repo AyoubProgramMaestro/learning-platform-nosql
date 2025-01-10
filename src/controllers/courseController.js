@@ -68,5 +68,7 @@ async function getCourseStats(req, res) {
 // Export des contrôleurs
 module.exports = {
   // TODO: Exporter les fonctions du contrôleur
-  createCourse
+  createCourse,
+  getCourse,
+  getCourseStats
 };

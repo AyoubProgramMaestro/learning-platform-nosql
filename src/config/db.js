@@ -13,10 +13,7 @@ async function connectMongo() {
   // TODO: Implémenter la connexion MongoDB
   // Gérer les erreurs et les retries
   try {
-    mongoClient = new MongoClient(config.mongodb.uri, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
+    mongoClient = new MongoClient(config.mongodb.uri);
 
     await mongoClient.connect(); // Connexion à MongoDB
     db = mongoClient.db(config.mongodb.dbName); // Sélection de la base de données
