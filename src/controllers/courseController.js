@@ -55,6 +55,16 @@ async function getCourse(req, res) {
   }
 }
 
+async function getCourseStats(req, res) {
+  try {
+    const stats = await mongoService.getCourseStats();
+    res.status(200).json({ stats });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Error fetching course statistics', error });
+  }
+}
+
 // Export des contrôleurs
 module.exports = {
   // TODO: Exporter les fonctions du contrôleur
