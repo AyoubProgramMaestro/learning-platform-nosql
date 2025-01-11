@@ -59,7 +59,8 @@ async function startServer() {
 process.on('SIGTERM', async () => {
   // TODO: Implémenter la fermeture propre des connexions
   console.log('Received SIGTERM, shutting down gracefully...');
-  await db.closeConnections();
+  await db.closeMongo(); 
+  await db.closeRedis(); 
   process.exit(0); 
 });
 

@@ -1,7 +1,7 @@
 // Question : Pourquoi créer un module séparé pour les connexions aux bases de données ?
-// Réponse : 
+// Réponse : Un module séparé pour les connexions permet de centraliser la gestion des connexions, de simplifier la maintenance, et d'éviter les duplications de code. Il améliore également la réutilisabilité et la lisibilité.
 // Question : Comment gérer proprement la fermeture des connexions ?
-// Réponse : 
+// Réponse : Pour fermer proprement les connexions, il est important d'utiliser des méthodes comme close() pour MongoDB et quit() pour Redis, et de s'assurer que les connexions sont fermées lors de la fermeture de l'application pour éviter les fuites de ressourc
 
 const { MongoClient } = require('mongodb');
 const redis = require('redis');
@@ -48,11 +48,31 @@ async function connectRedis() {
   });
 }
 
+async function closeMongo() {
+  if (mongoClient) {
+    await mongoClient.close();
+    console.log('MongoDB connection closed');
+  } else {
+    console.log('No active MongoDB connection found');
+  }
+}
+
+async function closeRedis() {
+  if (redisClient) {
+    await redisClient.quit();
+    console.log('Redis connection closed');
+  } else {
+    console.log('No active Redis connection found');
+  }
+}
+
 // Export des fonctions et clients
 module.exports = {
   // TODO: Exporter les clients et fonctions utiles
   connectMongo,
   connectRedis,
+  closeMongo,  
+  closeRedis, 
   getDbInstance: () => {
     if (!db) {
       throw new Error('MongoDB is not connected. Call connectMongo first.');
