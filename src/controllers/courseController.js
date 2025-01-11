@@ -12,25 +12,28 @@ async function createCourse(req, res) {
   // TODO: Implémenter la création d'un cours
   // Utiliser les services pour la logique réutilisable
   try {
-    const { name, description } = req.body;
+    const { name, description, duration } = req.body;
 
+    // Validation des champs requis
     if (!name || !description) {
       return res.status(400).json({ message: 'Name and description are required' });
     }
 
-    // Créer un cours dans MongoDB
-    const newCourse = await mongoService.createCourse({ name, description });
+    // Création d'un cours dans MongoDB
+    const newCourse = await mongoService.createCourse({ name, description, duration: duration || 0 });
 
-    // Mettre à jour Redis avec la liste des cours ou d'autres informations (si nécessaire)
-    await redisService.updateCourseCache(newCourse);
+    // Mise à jour du cache Redis (si applicable)
+    if (redisService && redisService.updateCourseCache) {
+      await redisService.updateCourseCache(newCourse);
+    }
 
     res.status(201).json({
       message: 'Course created successfully',
-      course: newCourse
+      course: newCourse,
     });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Error creating course', error });
+    console.error('Error creating course:', error.message);
+    res.status(500).json({ message: 'Error creating course', error: error.message });
   }
 }
 
@@ -57,11 +60,19 @@ async function getCourse(req, res) {
 
 async function getCourseStats(req, res) {
   try {
+    
     const stats = await mongoService.getCourseStats();
+
+    
+    if (!stats) {
+      return res.status(404).json({ message: 'No stats found' });
+    }
+
+   
     res.status(200).json({ stats });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Error fetching course statistics', error });
+    console.error('Error fetching course statistics:', error);
+    res.status(500).json({ message: 'Error fetching course statistics', error: error.message });
   }
 }
 
