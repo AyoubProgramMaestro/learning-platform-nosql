@@ -1,4 +1,4 @@
-### Documentation du Projet Node.js avec MongoDB et Redis ###
+# Documentation du Projet Node.js avec MongoDB et Redis ###
 
 ## Installation et lancement du projet
 
